@@ -6,7 +6,7 @@ import org.openqa.selenium.support.ui.Select;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SeleniumTest {
+public class simpleSeleniumTest {
     public static void main(String[] args){
 
         //Create Chromedriver Object
@@ -17,8 +17,8 @@ public class SeleniumTest {
         driver.get("https://katalon-demo-cura.herokuapp.com/");
 
         //Assert website title header with expected title
-        String title = driver.getTitle();                   //Get website title header
-        String expectedtitle = "CURA Healthcare Service";   //Expected title header
+        String title = driver.getTitle();                   //Get website title
+        String expectedtitle = "CURA Healthcare Service";   //Expected title
         if (title.contentEquals(expectedtitle)) {           //Create condition for checking whether title already correct or not
             System.out.println("Title Match!");
         }
@@ -48,12 +48,29 @@ public class SeleniumTest {
         }
 
         //User login with username and password
-        WebElement inputUsername = driver.findElement(By.id("txt-username"));   //Create Username input field object by ID
-        inputUsername.sendKeys("John Doe");                        //Input text into Username field
-        WebElement inputPassword = driver.findElement(By.id("txt-password"));   //Create Password input field object by ID
-        inputPassword.sendKeys("ThisIsNotAPassword");              //Input text into Password field
-        WebElement buttonLogin = driver.findElement(By.id("btn-login"));        //Create Login button object by ID
-        buttonLogin.click();                                                    //Click Login button
+        WebElement inputUsername = driver.findElement(By.id("txt-username"));    //Create Username input field object by ID
+        inputUsername.sendKeys("John Doe");                         //Input text into Username field
+        WebElement inputPassword = driver.findElement(By.id("txt-password"));    //Create Password input field object by ID
+        inputPassword.sendKeys("ThisIsNotAPassword");               //Input text into Password field
+        WebElement buttonLogin = driver.findElement(By.id("btn-login"));         //Create Login button object by ID
+        buttonLogin.click();                                                     //Click Login button
+
+        //Verify appointment page is displayed
+        String appointmenturl = driver.getCurrentUrl();                                               //Get the current URL
+        if (appointmenturl.equals("https://katalon-demo-cura.herokuapp.com/#appointment")) {          //Create condition for checking whether appointment URL already correct or not
+            System.out.println("Appointment URL correct!");
+        }
+        else {
+            System.out.println("Incorrect Appointment URL!");
+        }
+        WebElement labelAppointment = driver.findElement(By.xpath("//*[@id='appointment']/div/div/div/h2"));    //Create Appointment label object with XPATH
+        String appointmentText = labelAppointment.getText();                                                    //Get Appointment label text
+        if (appointmentText.equals("Make Appointment")) {                                                       //Create condition for checking whether Appointment text already correct or not
+            System.out.println("Appointment Page Opened!");
+        }
+        else {
+            System.out.println("Appointment Page Not Found!");
+        }
 
         //User select facility droplist
         Select drpFacility = new Select(driver.findElement(By.id("combo_facility")));             //Create Facility droplist object by ID
@@ -64,7 +81,7 @@ public class SeleniumTest {
         WebElement chkAdmission = driver.findElement(By.id("chk_hospotal_readmission"));    //Create Readmission checkbox object by ID
         chkAdmission.click();                                                               //Click Readmission checkbox
         String chkAdmissionFlag;                                                            //Create Admission flag variable
-        if(chkAdmission.getDomProperty("checked").equals("True")){                    //Get the checkbox checked state based on DOM property
+        if(chkAdmission.isSelected()){                                                      //Get the checkbox checked state based on DOM property
             chkAdmissionFlag = "Yes";
         }
         else{
@@ -77,27 +94,27 @@ public class SeleniumTest {
         String radioMedicaidText = radioMedicaid.getDomProperty("value");             //Get the radiobutton value based on DOM property
 
         //User select visit date
-        WebElement btnCalendar = driver.findElement(By.id("txt_visit_date"));                                                       //Create Visit Calendar button object by ID
-        btnCalendar.click();                                                                                                        //Click Visit Calendar
+        WebElement buttonCalendar = driver.findElement(By.id("txt_visit_date"));                                                    //Create Visit Calendar button object by ID
+        buttonCalendar.click();                                                                                                     //Click Visit Calendar
         List<WebElement> date = driver.findElements(By.xpath("//td[@class='day']"));                                                //Create element lists of date object to get the maximum date on a month
         int randomDate = ThreadLocalRandom.current().nextInt(1, date.size() + 1);                                      //Create variable for input random date between 1-maximum date in a month
         WebElement selectDate = driver.findElement(By.xpath("//td[@class='day' and normalize-space(text())='"+randomDate+"']"));    //Create date object based on inputted number in variable randomDate
         selectDate.click();                                                                                                         //Click date
-        String selectedDate = btnCalendar.getDomProperty("value");                                                            //Get the date value based on DOM property
+        String selectedDate = buttonCalendar.getDomProperty("value");                                                         //Get the date value based on DOM property
 
         //User input comment
-        WebElement txtComment = driver.findElement(By.id("txt_comment"));       //Create Comment input object by ID
-        txtComment.sendKeys("Test Selenium");                      //Input text into Comment field
-        String inputtedComment = txtComment.getDomProperty("value");     //Get the inputted Comment value based on DOM property
+        WebElement inputComment = driver.findElement(By.id("txt_comment"));       //Create Comment input object by ID
+        inputComment.sendKeys("Test Selenium");                      //Input text into Comment field
+        String inputtedComment = inputComment.getDomProperty("value");     //Get the inputted Comment value based on DOM property
 
         //User submit appointment
-        WebElement btnBook = driver.findElement(By.id("btn-book-appointment"));     //Create Appointment button object by ID
-        btnBook.click();                                                            //Click Appointment button
+        WebElement buttonBook = driver.findElement(By.id("btn-book-appointment"));     //Create Appointment button object by ID
+        buttonBook.click();                                                            //Click Appointment button
 
         //Verify appointment confirmation page displayed
-        WebElement lblConfirmation = driver.findElement(By.xpath("//*[@id='summary']/div/div/div[1]/h2"));  //Create Appointment Confirmation label object with XPATH
-        String confirmationText = lblConfirmation.getText();                                                //Get Appointment Confirmation label text
-        if (confirmationText.equals("Appointment Confirmation")) {                                          //Create condition for checking whether Appointment Confirmation text already correct or not
+        WebElement labelConfirmation = driver.findElement(By.xpath("//*[@id='summary']/div/div/div[1]/h2"));  //Create Appointment Confirmation label object with XPATH
+        String confirmationText = labelConfirmation.getText();                                                //Get Appointment Confirmation label text
+        if (confirmationText.equals("Appointment Confirmation")) {                                            //Create condition for checking whether Appointment Confirmation text already correct or not
             System.out.println("Appointment Confirmation Opened!");
         }
         else {
@@ -105,16 +122,21 @@ public class SeleniumTest {
         }
 
         //Assert appointment confirmation data with expected result based on inputted data on previous page
-        WebElement lblFacility = driver.findElement(By.id("facility"));                     //Create Facility text object with ID
-        WebElement lblReadmission = driver.findElement(By.id("hospital_readmission"));      //Create Readmission text object with ID
-        WebElement lblProgram = driver.findElement(By.id("program"));                       //Create Healthcare Program text object with ID
-        WebElement lblVisitDate = driver.findElement(By.id("visit_date"));                  //Create Visit Date text object with ID
-        WebElement lblComment = driver.findElement(By.id("comment"));                       //Create Comment text object with ID
-        if (lblFacility.getText().equals(selectedValue)                                     //Create condition for checking whether all displayed fields are identics with the inputted data
-            && lblReadmission.getText().equals(chkAdmissionFlag)
-            && lblProgram.getText().equals(radioMedicaidText)
-            && lblVisitDate.getText().equals(selectedDate)
-            && lblComment.getText().equals(inputtedComment)) {
+        WebElement labelFacility = driver.findElement(By.id("facility"));                     //Create Facility text object with ID
+        WebElement labelReadmission = driver.findElement(By.id("hospital_readmission"));      //Create Readmission text object with ID
+        WebElement labelProgram = driver.findElement(By.id("program"));                       //Create Healthcare Program text object with ID
+        WebElement labelVisitDate = driver.findElement(By.id("visit_date"));                  //Create Visit Date text object with ID
+        WebElement labelComment = driver.findElement(By.id("comment"));                       //Create Comment text object with ID
+        System.out.println("Facility : "+selectedValue);
+        System.out.println("Hospital Readmission : "+chkAdmissionFlag);
+        System.out.println("Healthcare Program : "+radioMedicaidText);
+        System.out.println("Visit Date : "+selectedDate);
+        System.out.println("Comment : "+inputtedComment);
+        if (labelFacility.getText().equals(selectedValue)                                     //Create condition for checking whether all displayed fields are identics with the inputted data
+            && labelReadmission.getText().equals(chkAdmissionFlag)
+            && labelProgram.getText().equals(radioMedicaidText)
+            && labelVisitDate.getText().equals(selectedDate)
+            && labelComment.getText().equals(inputtedComment)) {
             System.out.println("Test Passed!");
         }
         else {
